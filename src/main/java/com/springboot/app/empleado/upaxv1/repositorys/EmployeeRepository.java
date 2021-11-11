@@ -20,9 +20,11 @@ public interface EmployeeRepository extends  JpaRepository<Employee, Long>{
 	@Query("SELECT u FROM Employee u WHERE u.name = ?1")
 	public Optional<?> Name(String name);
 	
-	@Query("SELECT u FROM Employee u WHERE u.lastName = ?1")
-	public Optional<?> LastName(String lastName);
+	@Query("SELECT u FROM Employee u WHERE u.last_name = ?1")
+	public Optional<?> LastName(String last_name);
 	
+	@Query("SELECT u FROM Employee u WHERE u.id = ?1")
+	public Optional<?> employeeExist(Integer id);
 	
 	
 }

@@ -9,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name="employees")
@@ -18,49 +22,51 @@ public class Employee implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
+	Integer id;
 	
 	@Column(name="gender_id")
-	private Integer genderId;
+	private Integer gender_id;
 	
 	@Column(name="job_id")
-	private Integer jobId;
+	private Integer job_id;
 	
 	@Column(name="name")
 	private String name;
 	
 	@Column(name="last_name")
-	private String lastName;
+	private String last_name;
 	
 	@Column(name="birthdate")
-	private Date birthDate = new Date();
+	@Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date birthdate ;
 	
 	public Employee(){
 		
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
 	public Integer getGender_id() {
-		return genderId;
+		return gender_id;
 	}
 
-	public void setGender_id(Integer genderId) {
-		this.genderId = genderId;
+	public void setGender_id(Integer gender_id) {
+		this.gender_id = gender_id;
 	}
 
 	public Integer getJob_id() {
-		return jobId;
+		return job_id;
 	}
 
 	public void setJob_id(Integer job_id) {
-		this.jobId= jobId;
+		this.job_id = job_id;
 	}
 
 	public String getName() {
@@ -71,21 +77,25 @@ public class Employee implements Serializable {
 		this.name = name;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getLast_name() {
+		return last_name;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setLast_name(String last_name) {
+		this.last_name = last_name;
 	}
 
-	public Date getBirthDate() {
-		return birthDate;
+	public Date getBirthdate() {
+		return birthdate;
 	}
 
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
 	}
+
+	
+	
+	
 	
 	
 }

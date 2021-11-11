@@ -7,16 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.app.empleado.upaxv1.models.Employee;
+import com.springboot.app.empleado.upaxv1.models.EmployeeWorkedHour;
 import com.springboot.app.empleado.upaxv1.repositorys.EmployeeRepository;
 import com.springboot.app.empleado.upaxv1.repositorys.GenderRepository;
 import com.springboot.app.empleado.upaxv1.repositorys.JobRepository;
-
+import com.springboot.app.empleado.upaxv1.repositorys.WrokedHoursRepository;
 
 @Service
 public class EmployeeServices implements IEmployeeService{
 	
 
 	@Autowired EmployeeRepository employeeRepository;
+	@Autowired WrokedHoursRepository wrokedHoursRepository; 
 	@Autowired JobRepository jobRepository;
 	@Autowired GenderRepository genderRepository;
 	
@@ -30,8 +32,8 @@ public class EmployeeServices implements IEmployeeService{
 
 
 	@Override
-	public Optional<?> FinByLastName(String lastName){
-		Optional<?> _lastName=this.employeeRepository.LastName(lastName);
+	public Optional<?> FinByLastName(String last_name){
+		Optional<?> _lastName=this.employeeRepository.LastName(last_name);
 		System.out.println("el nombre del empleado es  "+_lastName);
 		return _lastName;
 	}
@@ -55,4 +57,19 @@ public class EmployeeServices implements IEmployeeService{
 		Employee _employee=this.employeeRepository.save(employee);
 		return _employee;
 	}
+
+
+	@Override
+	public Optional<?> employeeExist(Integer id) {
+		Optional<?> _employeeExist=this.employeeRepository.employeeExist(id);
+		return _employeeExist;
+	}
+	
+	public EmployeeWorkedHour employeeWorked(EmployeeWorkedHour employeeWorked){
+		EmployeeWorkedHour _employeeWorked=this.wrokedHoursRepository.save(employeeWorked);
+		return _employeeWorked;
+	}
+	
+	
+	
 }

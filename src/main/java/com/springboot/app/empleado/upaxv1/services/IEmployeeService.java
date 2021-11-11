@@ -16,5 +16,7 @@ public interface IEmployeeService {
 	public Optional<?> FindGenderById(Integer id);
 
 	public Optional<?> FindJobById(Integer id);
+	
+	public Optional<?> employeeExist(Integer id);
 
 }

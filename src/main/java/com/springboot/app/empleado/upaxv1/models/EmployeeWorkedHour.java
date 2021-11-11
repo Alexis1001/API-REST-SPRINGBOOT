@@ -8,6 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name="employee_worked_hours")
@@ -19,18 +23,20 @@ public class EmployeeWorkedHour implements Serializable {
 	Long id;
 	
 	@Column(name="employee_id")
-	Long employeeId;
+	Integer employee_id;
 	
 	@Column(name="worked_hours")
-	Long workedHours;
+	Integer worked_hours;
 	
 	@Column(name="worked_date")
-	private Date workedDate = new Date();
+	@Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
+	private Date worked_date;
 
 	public EmployeeWorkedHour() {
 		
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -39,28 +45,39 @@ public class EmployeeWorkedHour implements Serializable {
 		this.id = id;
 	}
 
-	public Long getEmployeeId() {
-		return employeeId;
+	public Integer getEmployee_id() {
+		return employee_id;
 	}
 
-	public void setEmployeeId(Long employeeId) {
-		this.employeeId = employeeId;
+	public void setEmployee_id(Integer employee_id) {
+		this.employee_id = employee_id;
 	}
 
-	public Long getWorkedHours() {
-		return workedHours;
+	public Integer getWorked_hours() {
+		return worked_hours;
 	}
 
-	public void setWorkedHours(Long workedHours) {
-		this.workedHours = workedHours;
+	public void setWorked_hours(Integer worked_hours) {
+		this.worked_hours = worked_hours;
 	}
 
-	public Date getWorkedDate() {
-		return workedDate;
+	public Date getWorked_date() {
+		return worked_date;
 	}
 
-	public void setWorkedDate(Date workedDate) {
-		this.workedDate = workedDate;
+	public void setWorked_date(Date worked_date) {
+		this.worked_date = worked_date;
 	}
+
+	@Override
+	public String toString() {
+		return "EmployeeWorkedHour [id=" + id + ", employee_id=" + employee_id + ", worked_hours=" + worked_hours
+				+ ", worked_date=" + worked_date + "]";
+	}
+	
+	
+	
+
+	
 	
 }

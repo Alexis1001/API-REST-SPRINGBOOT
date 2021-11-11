@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 import com.springboot.app.empleado.upaxv1.models.Employee;
+import com.springboot.app.empleado.upaxv1.models.EmployeeWorkedHour;
 import com.springboot.app.empleado.upaxv1.services.EmployeeServices;
 
 @RestController
@@ -29,29 +30,18 @@ public class EmployeeController {
 	
 	@PostMapping(value = "/employees")
 	public ResponseEntity<HashMap<String, String>> addEmployee( @RequestBody(required = true) Employee employee) throws ParseException {
-		
-		Date date=employee.getBirthDate();
+		System.out.println("el empleado es "+employee);
+		this.getCalculateEge(employee.getBirthdate());
 		boolean Name=this.NameExist(employee.getName());
-		boolean lastName=this.LastNameExist(employee.getLastName());
-		boolean isNotOlder=this.getCalculateEge(date);
-		
+		boolean lastName=this.LastNameExist(employee.getLast_name());
+		boolean isOlder=this.getCalculateEge(employee.getBirthdate());
 		Integer jobId=employee.getJob_id();
 		boolean job=this.JobExist(jobId);
 		Integer GenderId=employee.getGender_id();
 		boolean gender=this.GenderExist(GenderId);
-		
-		
-		if(!Name && !lastName && isNotOlder && gender && job) {
+		if(!Name && !lastName && isOlder && gender && job) {
 			//System.out.println("insertar ");
-			//this.employeeService.addEmployee(employee)
-			Employee _employee =new Employee();
-			_employee.setName(employee.getName());
-			_employee.setLastName(employee.getLastName());
-			_employee.setBirthDate(employee.getBirthDate());
-			_employee.setGender_id(employee.getGender_id());
-			_employee.setJob_id(employee.getJob_id());
-			
-			this.employeeService.addEmployee(_employee);
+			this.employeeService.addEmployee(employee);
 			
 			return ResponseEntity.status(HttpStatus.OK).body(this.responseBody(jobId,"success",true));
 		}
@@ -59,9 +49,28 @@ public class EmployeeController {
 			return ResponseEntity.status(HttpStatus.OK).body(this.responseBody(jobId,"success",false));
 		}
 		
-		
+	}
+	/*	Se debe validar que el empleado exista, 
+	 * que el total de horas trabajadas no sea mayor a 20 horas y
+		que la fecha de trabajo sea menor o igual a la actual y */
+	 
+	@PostMapping(value = "/employees/worked-hours")
+	
+	public ResponseEntity<HashMap<String,String>> workerdHours( @RequestBody(required = true) EmployeeWorkedHour employeeWorked ){
+		System.out.println("trabajado "+employeeWorked);
+		boolean exist=this.employeeExiste(employeeWorked.getEmployee_id());
+		System.out.println("el usuario existe "+exist);
+		boolean isLess=this.compareDate(employeeWorked.getWorked_date());
+		if(exist && employeeWorked.getWorked_hours()<20 && isLess) {
+			this.employeeService.employeeWorked(employeeWorked);
+			return ResponseEntity.status(HttpStatus.OK).body(this.responseBody(employeeWorked.getEmployee_id(),"success",true));
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.OK).body(this.responseBody(employeeWorked.getEmployee_id(),"success",false));
+		}
 		
 	}
+	
 	
 	public HashMap<String,String> responseBody(Integer id,String key,  boolean data) {
 		HashMap<String,String> response = new HashMap<String,String>();
@@ -71,47 +80,46 @@ public class EmployeeController {
 		return response;
 	}
 	
+	public boolean employeeExiste(Integer employeeId) {
+		Optional<?> employee=this.employeeService.employeeExist(employeeId);
+		if(employee.isEmpty()) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	} 
+	
+	public boolean compareDate(Date dateWork) {
+		Date currentDate=new Date();
+		long current_date=currentDate.getTime();
+		System.out.println("fecha de horas trabajadas "+dateWork.getTime());
+		System.out.println("fecha actual "+current_date);
+		if(dateWork.getTime()<=current_date) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
+	}
+	
 	
 	public boolean getCalculateEge(Date date) throws ParseException {
-		//Calendar calendar=Calendar.getInstance();
-		//Date currentDate=calendar.getTime();
-		
-		Date dt=new Date();
-        int year=dt.getYear();
-        int current_Year=year+1900;
-        int anio=date.getYear();
-        
-        System.out.println("año actual  "+current_Year);
-        System.out.println("año nacimiento "+anio);
-        SimpleDateFormat getYearFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String currentYear = getYearFormat.format(date);
-        System.out.println("ano de nacimiento"+currentYear);
-        
-        String fecha=date.getYear()+"/"+date.getMonth()+"/"+date.getDay();
-        System.out.println("la fecha es "+fecha);
-        //Calendar calendar=calendar.getInstance();
-        
-        Date d=new Date();  
-        int yeaxr=d.getYear()+1900;
-        
-        int x=date.getYear()+1900;
-        System.out.println("Year for date object is : "+date.getYear());
-        System.out.println("Year for date object is : "+x);  
-   
-        
-     /*
-		String _date[]=date.split("-");
-		int anio=Integer.parseInt(_date[0]);
-		int currentAnio= current_Year;
-		int result=currentAnio-anio;
+		Date currentDate=new Date();
+		int currentYear=currentDate.getYear()+1900;
+		System.out.println("fecha actual "+currentYear);
+		int birthdate=date.getYear()+1900;
+		System.out.println("fecha nacimineto "+birthdate);
+		System.out.println("el date es "+date);
+		int result=currentYear-birthdate;
+		System.out.println("result "+result);
 		if(result<18) {
 			return false;
 		}
 		else {
 			return true;
-		}*/
-		return true;
-		
+		}
 	}
 	
 	public boolean NameExist(String name) {
